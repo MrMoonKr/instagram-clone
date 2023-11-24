@@ -12,6 +12,16 @@ Instagram clone using python django with a lot of Instagram features.
 - Posting Images.
 - Like and comment on a post.
 
+### Prerequisite
+- Python 3.12.0
+- VS Code
+```
+python -m venv venv-local
+```
+```
+./venv-local/Scripts/Activate.ps1
+```
+
 ### Installation
 - Make sure Python is installed.
 - Clone the repository and change your directory to Instagram_clone.
@@ -30,11 +40,11 @@ pip install -r requiremnts.txt
 ```
 - Now make the migrations.
 ```
-python manage.py migrate
+python manage.py makemigrations
 ```
 - Commit the migrations.
 ```
-python manage.py makemigrations
+python manage.py migrate
 ```
 - Create a super user.
 ```

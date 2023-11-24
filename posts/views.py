@@ -1,5 +1,5 @@
 from django.shortcuts import render, redirect
-from django.http import JsonResponse
+from django.http import HttpRequest, JsonResponse
 from django.contrib import messages
 from profiles.models import Profile
 from .models import Post, Comment
@@ -15,11 +15,19 @@ def home(request):
     }
     return render(request, 'posts/home.html', context=context)
 
+def is_ajax( request: HttpRequest ):
+    '''
+        HttpRequest.is_ajax() deprecated. so implement
+        '''
+    return request.META.get( 'HTTP_X_REQUESTED_WITH' ) == 'XMLHttpRequest'
+
+
 
 def get_posts(request, num_posts):
     if not request.user.is_authenticated:
         return redirect('login')
-    if request.is_ajax():
+    # if request.is_ajax():
+    if is_ajax(request):
         visible = 10
         lower = num_posts - visible
         upper = num_posts
@@ -45,7 +53,8 @@ def get_posts(request, num_posts):
 def like_unlike_view(request):
     if not request.user.is_authenticated:
         return redirect('login')
-    if request.is_ajax():
+    #if request.is_ajax():
+    if is_ajax( request ):
         pk = request.POST.get('pk')
         post = Post.objects.get(id=pk)
         if request.user in post.liked.all():
@@ -69,7 +78,8 @@ def post_delete_view(request, pk):
 def comment_view(request):
     if not request.user.is_authenticated:
         return redirect('login')
-    if request.is_ajax():
+    #if request.is_ajax():
+    if is_ajax( request ):
         pk = request.POST.get('pk')
         comment_data = request.POST.get('commentData')
         post = Post.objects.get(id=pk)

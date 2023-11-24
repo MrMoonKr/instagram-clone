@@ -3,7 +3,7 @@ from django.shortcuts import render, redirect
 from django.contrib import messages
 from django.contrib.auth.models import User
 from django.contrib.auth import authenticate, login, logout
-from django.http import JsonResponse
+from django.http import HttpRequest, JsonResponse
 from django.contrib.auth.decorators import login_required
 from posts.models import Post
 from .models import Follower, Profile
@@ -13,6 +13,13 @@ from .forms import (
     UpdateUserForm,
     UpdateProfileForm
 )
+
+def is_ajax( request: HttpRequest ):
+    '''
+        HttpRequest.is_ajax() deprecated. so implement
+        '''
+    return request.META.get( 'HTTP_X_REQUESTED_WITH' ) == 'XMLHttpRequest'
+
 
 
 def register_view(request):
@@ -71,7 +78,8 @@ def current_user_view(request, user_id):
 
 
 def current_user_posts_view(request, user_id, num_posts):
-    if request.is_ajax():
+    #if request.is_ajax():
+    if is_ajax( request ):
         visible = 10
         lower = num_posts - visible
         upper = num_posts
@@ -95,7 +103,8 @@ def current_user_posts_view(request, user_id, num_posts):
 
 
 def get_user_posts_view(request, num_posts):
-    if request.is_ajax():
+    #if request.is_ajax():
+    if is_ajax( request ):
         visible = 10
         lower = num_posts - visible
         upper = num_posts
@@ -177,7 +186,8 @@ def edit_profile_view(request, username):
 
 
 def get_search_users_view(request):
-    if request.is_ajax():
+    #if request.is_ajax():
+    if is_ajax( request ):
         username = request.GET['username']
         users = User.objects.filter(username__icontains=username)
         data = []
